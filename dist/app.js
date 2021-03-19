@@ -11,7 +11,8 @@ const app = express_1.default();
 app.set("port", 16000);
 // Middlewares
 app.use(morgan_1.default("dev"));
+app.use(express_1.default.json());
 // Routes
-app.use("/api/auth", auth_route_1.default);
+app.use("/apiv1/auth", auth_route_1.default);
 exports.default = app;
 //# sourceMappingURL=app.js.map

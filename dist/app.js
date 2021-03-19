@@ -12,6 +12,6 @@ app.set("port", 16000);
 // Middlewares
 app.use(morgan_1.default("dev"));
 // Routes
-app.use(auth_route_1.default);
+app.use("/api/auth", auth_route_1.default);
 exports.default = app;
 //# sourceMappingURL=app.js.map

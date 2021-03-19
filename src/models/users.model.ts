@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-new Schema({
+const userSchema = new Schema({
     username: {
     type:String,
     required: true,
@@ -13,7 +13,6 @@ email: {
     unique:true,
     required:true,
     lowelcase:true
-
 },
 password:{
 type:String,
@@ -21,3 +20,5 @@ required:true
 }
 
 })
+
+export default model ("User", userSchema)

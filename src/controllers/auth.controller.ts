@@ -2,20 +2,28 @@ import { Request, Response } from "express";
 import User,{ IUser } from "../models/users.model";
 import jwt  from "jsonwebtoken";
 import bcrypt, { compare } from "bcryptjs";
-
+import { siginValidation, signupValidation } from "../libs/joi";
 
 
 export const signup =  async (req:Request, res:Response)=>{
+    // Validation
+    const {error} = signupValidation(req.body);
+    if(error) return res.status(400).json(error.details[0].message)
+    
+    // Email Validation
+    const emailExits = await User.findOne({email:req.body.email})
+    if (emailExits) return res.status(400).json("Email already exits");
+   
     // Saving a new user
-    const user:IUser = new User({
+    const newUser:IUser = new User({
         username: req.body.username,
         email: req.body.email,
         password:req.body.password
     });
     
-    user.password =  await user.encryptPassword(user.password)
+    newUser.password =  await newUser.encryptPassword(newUser.password)
 
-    const savedUser = await user.save()
+    const savedUser = await newUser.save()
     console.log(savedUser);
     
     // Token
@@ -26,6 +34,11 @@ export const signup =  async (req:Request, res:Response)=>{
 };
 
 export const signin = async (req:Request, res:Response)=>{
+    
+    // Validation
+    const {error} = siginValidation(req.body);
+    if(error) return res.status(400).json(error.details[0].message)
+
     const user = await User.findOne({email: req.body.email})
     if(!user) return res.status(400).json("Email or password is wrong");
    

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://localhost/jwt",{
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/test',{
     useNewUrlParser: true, 
     useUnifiedTopology: true,
     useCreateIndex:true

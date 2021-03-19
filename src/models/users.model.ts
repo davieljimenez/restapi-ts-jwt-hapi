@@ -13,6 +13,7 @@ const userSchema = new Schema({
     type:String,
     required: true,
     min:4,
+    max:30,
     lowelcase:true,
     unique:true
 },
@@ -24,6 +25,7 @@ email: {
 },
 password:{
 type:String,
+min:6,
 required:true
 }
 

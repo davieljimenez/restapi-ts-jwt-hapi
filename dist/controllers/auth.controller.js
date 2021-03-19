@@ -16,15 +16,24 @@ exports.testing = exports.profile = exports.signin = exports.signup = void 0;
 const users_model_1 = __importDefault(require("../models/users.model"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const joi_1 = require("../libs/joi");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Validation
+    const { error } = joi_1.signupValidation(req.body);
+    if (error)
+        return res.status(400).json(error.details[0].message);
+    // Email Validation
+    const emailExits = yield users_model_1.default.findOne({ email: req.body.email });
+    if (emailExits)
+        return res.status(400).json("Email already exits");
     // Saving a new user
-    const user = new users_model_1.default({
+    const newUser = new users_model_1.default({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
     });
-    user.password = yield user.encryptPassword(user.password);
-    const savedUser = yield user.save();
+    newUser.password = yield newUser.encryptPassword(newUser.password);
+    const savedUser = yield newUser.save();
     console.log(savedUser);
     // Token
     const token = jsonwebtoken_1.default.sign({ _id: savedUser._id }, process.env.TOKEN_SECRET || "tokentest");
@@ -33,6 +42,10 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.signup = signup;
 const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Validation
+    const { error } = joi_1.siginValidation(req.body);
+    if (error)
+        return res.status(400).json(error.details[0].message);
     const user = yield users_model_1.default.findOne({ email: req.body.email });
     if (!user)
         return res.status(400).json("Email or password is wrong");

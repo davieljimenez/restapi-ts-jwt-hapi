@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User,{ IUser } from "../models/users.model";
 import jwt  from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt, { compare } from "bcryptjs";
 
 
 
@@ -37,7 +37,7 @@ export const signin = async (req:Request, res:Response)=>{
         expiresIn: 60 * 60 * 24 
     })
 
-    res.header("auth-token", token).json(user);
+    res.header("auth-token", token).json(user); 
     
     // userSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     //     return await bcrypt.compare(password, password);
@@ -48,7 +48,13 @@ export const signin = async (req:Request, res:Response)=>{
     // res.send("Login")
 };
 
-export const profile = (req:Request, res:Response)=>{
-    res.send("profile")
+export const profile = async (req:Request, res:Response)=>{
+   const user = await User.findById(req.userId, {password: 0});
+   if(!user) return res.status(404).json("No user found");
+    res.json(user);
 
 };
+
+export const testing = async (req:Request, res:Response) => {
+    res.json("Privity")
+}

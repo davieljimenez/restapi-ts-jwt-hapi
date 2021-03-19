@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.profile = exports.signin = exports.signup = void 0;
+exports.testing = exports.profile = exports.signin = exports.signup = void 0;
 const users_model_1 = __importDefault(require("../models/users.model"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -51,8 +51,15 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // res.send("Login")
 });
 exports.signin = signin;
-const profile = (req, res) => {
-    res.send("profile");
-};
+const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_model_1.default.findById(req.userId, { password: 0 });
+    if (!user)
+        return res.status(404).json("No user found");
+    res.json(user);
+});
 exports.profile = profile;
+const testing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json("Privity");
+});
+exports.testing = testing;
 //# sourceMappingURL=auth.controller.js.map

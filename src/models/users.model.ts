@@ -5,7 +5,7 @@ export interface IUser extends Document{
     email:string;
     password: string;
     encryptPassword(password:string): Promise<string>;
-    validatePassword(password:string): Promise<boolean>;
+    // validatePassword(password:string): Promise<boolean>;
 }
 
 const userSchema = new Schema({
@@ -34,9 +34,9 @@ userSchema.methods.encryptPassword = async (password:string):Promise<string> =>{
     return bcrypt.hash(password, salt)
 };
 
-userSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
-    return await bcrypt.compare(password, password);
+// userSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
+//     return await bcrypt.compare(password, password);
 
-};
+// };
 
 export default model<IUser> ("User", userSchema);

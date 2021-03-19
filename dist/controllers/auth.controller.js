@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.profile = exports.signin = exports.signup = void 0;
 const users_model_1 = __importDefault(require("../models/users.model"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Saving a new user
     const user = new users_model_1.default({
@@ -31,9 +32,24 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("signup");
 });
 exports.signup = signup;
-const signin = (req, res) => {
-    res.send("signin");
-};
+const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_model_1.default.findOne({ email: req.body.email });
+    if (!user)
+        return res.status(400).json("Email or password is wrong");
+    const correctPassword = yield bcryptjs_1.default.compare(req.body.password, user.password);
+    if (!correctPassword)
+        return res.status(400).json("Invalid Password");
+    const token = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.TOKEN_SECRET || "tokentest", {
+        expiresIn: 60 * 60 * 24
+    });
+    res.header("auth-token", token).json(user);
+    // userSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
+    //     return await bcrypt.compare(password, password);
+    // };
+    // const correctPassword:boolean = await user.validatePassword(req.body.password)
+    // if(!correctPassword) return res.status(400).json("Invalid Password");
+    // res.send("Login")
+});
 exports.signin = signin;
 const profile = (req, res) => {
     res.send("profile");

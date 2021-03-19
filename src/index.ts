@@ -1,5 +1,11 @@
 import app from "./app";
 
-app.listen(15000);
+import "./database"
 
-console.log("Server on port 15000");
+function main (){
+    app.listen(app.get("port"));
+    console.log("Server on port", app.get("port"));
+}
+
+main();
+
